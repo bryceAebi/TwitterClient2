@@ -11,13 +11,14 @@ import AFNetworking
 
 class TwitterTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var userProfilePic: UIImageView!
     @IBOutlet weak var postedTime: UILabel!
     @IBOutlet weak var userHandle: UILabel!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var tweetLabel: UILabel!
     @IBOutlet weak var retweetButton: UIButton!
     @IBOutlet weak var favoriteButton: UIButton!
+    @IBOutlet weak var profilePicButton: UIButton!
+    
     var tweet: Tweet!
     
     @IBAction func onFavorite(_ sender: AnyObject) {
@@ -38,7 +39,11 @@ class TwitterTableViewCell: UITableViewCell {
     
     func setCell(fromTweet tweet: Tweet) {
         self.tweet = tweet
-        userProfilePic.setImageWith(tweet.profilePic as! URL)
+        
+        if let data = NSData(contentsOf: tweet.profilePic as! URL) {
+            profilePicButton.setImage(UIImage(data: data as Data), for: .normal)
+        }
+        
         tweetLabel.text = tweet.text
         userNameLabel.text = tweet.username
         if let screenname = tweet.screenname {
@@ -65,8 +70,8 @@ class TwitterTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        userProfilePic.layer.cornerRadius = 3
-        userProfilePic.clipsToBounds = true
+        profilePicButton.layer.cornerRadius = 3
+        profilePicButton.clipsToBounds = true
     }
 
 }

@@ -1,22 +1,19 @@
 //
-//  TweetsViewController.swift
+//  MentionsViewController.swift
 //  Twitter
 //
-//  Created by Bryce Aebi on 10/29/16.
+//  Created by Bryce Aebi on 11/6/16.
 //  Copyright © 2016 Bryce Aebi. All rights reserved.
 //
 
 import UIKit
 
-
-class TweetsViewController: UIViewController {
+class MentionsViewController: UIViewController {
     
-    @IBOutlet weak var tweetTable: UITableView!
-    @IBAction func onLogoutButton(_ sender: AnyObject) {
-        TwitterClient.sharedInstance?.logout()
-    }
     
     var tweetDataSource: TweetDataSource!
+    
+    @IBOutlet weak var tweetTable: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,12 +24,11 @@ class TweetsViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = titleDict
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
-        tweetDataSource = TweetDataSource(tableView: tweetTable, tweetFilter: TweetFilter.all)
+        tweetDataSource = TweetDataSource(tableView: tweetTable, tweetFilter: TweetFilter.mentions)
     }
     
-
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
@@ -43,5 +39,4 @@ class TweetsViewController: UIViewController {
             vc.tweet = tweetDataSource.tweets?[(indexPath?.row)!]
         }
     }
-
 }

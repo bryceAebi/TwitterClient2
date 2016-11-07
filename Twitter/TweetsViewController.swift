@@ -11,15 +11,34 @@ import UIKit
 
 class TweetsViewController: UIViewController {
     
-    @IBOutlet weak var tweetTable: UITableView!
+
     @IBAction func onLogoutButton(_ sender: AnyObject) {
         TwitterClient.sharedInstance?.logout()
     }
     
-    var tweetDataSource: TweetDataSource!
+    @IBOutlet weak var contentView: UIView!
+    
+    //var tweetDataSource: TweetDataSource!
+    
+    var tweetFeedViewController: TweetFeedViewController! {
+        didSet {
+            view.layoutIfNeeded()
+            tweetFeedViewController.willMove(toParentViewController: self)
+            contentView.addSubview(tweetFeedViewController.view)
+            tweetFeedViewController.didMove(toParentViewController: self)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let tweetFeedViewController = storyboard.instantiateViewController(withIdentifier: "TweetFeedViewController")
+        
+        tweetFeedViewController.willMove(toParentViewController: self)
+        contentView.addSubview(tweetFeedViewController.view)
+        tweetFeedViewController.didMove(toParentViewController: self)
+        //tweetFeedViewController.tweetTable.reloadData()
         
         navigationController?.navigationBar.barTintColor = UIColor(hexString: "#4099ffff")
         
@@ -27,7 +46,7 @@ class TweetsViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = titleDict
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
-        tweetDataSource = TweetDataSource(tableView: tweetTable, tweetFilter: TweetFilter.all)
+        //tweetDataSource = TweetDataSource(tableView: tweetTable, tweetFilter: TweetFilter.all)
     }
     
 
@@ -39,8 +58,8 @@ class TweetsViewController: UIViewController {
         // Pass the selected object to the new view controller.
         if let sender = sender as? TwitterTableViewCell {
             let vc = segue.destination as! TweetViewController
-            var indexPath = tweetTable.indexPath(for: sender)
-            vc.tweet = tweetDataSource.tweets?[(indexPath?.row)!]
+            //var indexPath = tweetTable.indexPath(for: sender)
+           // vc.tweet = tweetDataSource.tweets?[(indexPath?.row)!]
         }
     }
 

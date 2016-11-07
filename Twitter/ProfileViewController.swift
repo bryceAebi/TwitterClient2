@@ -11,7 +11,7 @@ import UIKit
 class ProfileViewController: UIViewController {
 
     
-    var tweetDataSource: TweetDataSource!
+    //var tweetDataSource: TweetDataSource!
    
     @IBOutlet weak var tweetTable: UITableView!
     
@@ -63,7 +63,7 @@ class ProfileViewController: UIViewController {
         self.navigationController?.navigationBar.titleTextAttributes = titleDict
         self.navigationController?.navigationBar.tintColor = UIColor.white
         
-        tweetDataSource = TweetDataSource(tableView: tweetTable, tweetFilter: TweetFilter.all)
+        //tweetDataSource = TweetDataSource(tableView: tweetTable, tweetFilter: TweetFilter.all)
     }
 
     override func didReceiveMemoryWarning() {

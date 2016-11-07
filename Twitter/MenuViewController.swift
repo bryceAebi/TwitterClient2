@@ -13,7 +13,8 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var tableView: UITableView!
     private var profileViewController: UIViewController!
     private var timelineViewController: UIViewController!
-    private var mentionsViewController: UIViewController!
+    private var mentionsViewController: UINavigationController!
+    private var tweetFeedViewController: TweetFeedViewController!
     
     var hamburgerViewController: HamburgerViewController! {
         didSet {
@@ -28,7 +29,8 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         profileViewController = storyboard.instantiateViewController(withIdentifier: "ProfileNavigationController")
         timelineViewController = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController")
-        mentionsViewController = storyboard.instantiateViewController(withIdentifier: "MentionsNavigationController")
+        mentionsViewController = storyboard.instantiateViewController(withIdentifier: "MentionsNavigationController") as! UINavigationController
+        tweetFeedViewController = storyboard.instantiateViewController(withIdentifier: "TweetFeedViewController") as! TweetFeedViewController
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -64,6 +66,7 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
             hamburgerViewController.contentViewController = profileViewController
         } else if indexPath.row == 2 {
             hamburgerViewController.contentViewController = mentionsViewController
+            (mentionsViewController.viewControllers[0] as! MentionsViewController).tweetFeedController = tweetFeedViewController
         }
     }
 

@@ -20,7 +20,6 @@ class LoginViewController: UIViewController {
                 let menuViewController = storyboard.instantiateViewController(withIdentifier: "MenuViewController") as! MenuViewController
                 hamburgerViewController.menuViewController = menuViewController
                 menuViewController.hamburgerViewController = hamburgerViewController
-                //self.performSegue(withIdentifier: "loginSegue", sender: nil)
                 self.present(hamburgerViewController, animated: true)
             }, failure: { (error: Error) in
                 print("Error: \(error.localizedDescription)")

@@ -13,8 +13,7 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var tableView: UITableView!
     private var profileViewController: UIViewController!
     private var timelineViewController: UIViewController!
-    private var mentionsViewController: UINavigationController!
-    private var tweetFeedViewController: TweetFeedViewController!
+    private var mentionsViewController: UIViewController!
     
     var hamburgerViewController: HamburgerViewController! {
         didSet {
@@ -29,8 +28,7 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         profileViewController = storyboard.instantiateViewController(withIdentifier: "ProfileNavigationController")
         timelineViewController = storyboard.instantiateViewController(withIdentifier: "TweetsNavigationController")
-        mentionsViewController = storyboard.instantiateViewController(withIdentifier: "MentionsNavigationController") as! UINavigationController
-        tweetFeedViewController = storyboard.instantiateViewController(withIdentifier: "TweetFeedViewController") as! TweetFeedViewController
+        mentionsViewController = storyboard.instantiateViewController(withIdentifier: "MentionsNavigationController")
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -66,18 +64,7 @@ class MenuViewController: UIViewController, UITableViewDelegate, UITableViewData
             hamburgerViewController.contentViewController = profileViewController
         } else if indexPath.row == 2 {
             hamburgerViewController.contentViewController = mentionsViewController
-            (mentionsViewController.viewControllers[0] as! MentionsViewController).tweetFeedController = tweetFeedViewController
         }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

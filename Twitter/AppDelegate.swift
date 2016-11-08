@@ -25,11 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         hamburgerViewController.menuViewController = menuViewController
         menuViewController.hamburgerViewController = hamburgerViewController
         
-        
-        /*if User.currentUser != nil {
-            window?.rootViewController = storyboard.instantiateViewController(withIdentifier: "TweetFeedViewController")
-        }*/
-        
         if User.currentUser != nil {
             window?.rootViewController = hamburgerViewController
         }

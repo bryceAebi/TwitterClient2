@@ -9,77 +9,40 @@
 import UIKit
 
 class ProfileViewController: UIViewController {
-
     
-    //var tweetDataSource: TweetDataSource!
-   
-    @IBOutlet weak var tweetTable: UITableView!
+    @IBOutlet var contentView: UIView!
+    var tweetFeedViewController: TweetFeedViewController!
     
-    @IBOutlet weak var profileImageView: UIImageView!
-    @IBOutlet weak var usernameLabel: UILabel!
-    @IBOutlet weak var screennameLabel: UILabel!
-    @IBOutlet weak var tweetsCount: UILabel!
-    @IBOutlet weak var followingCount: UILabel!
-    @IBOutlet weak var followersCount: UILabel!
-    @IBOutlet weak var backgroundImageView: UIImageView!
-    
-    var user: User?
+    var userID: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if let screenname = User.currentUser?.name {
-            screennameLabel.text = "@\(screenname)"
-        }
-        if let userTweetCount = User.currentUser?.tweetCount {
-            tweetsCount.text = String(userTweetCount)
-        } else {
-            tweetsCount.text = ""
-        }
-        if let userFollowingCount = User.currentUser?.followingCount {
-            followingCount.text = String(userFollowingCount)
-        } else {
-            followingCount.text = ""
-        }
-        if let userFollowersCount = User.currentUser?.followersCount {
-            followersCount.text = String(userFollowersCount)
-        } else {
-            followersCount.text = ""
-        }
-        usernameLabel.text = User.currentUser?.name
-        if let url = User.currentUser?.profileUrl {
-            profileImageView.setImageWith(url)
-            profileImageView.layer.cornerRadius = 3
-            profileImageView.clipsToBounds = true
-        }
-        if let backgroundURL = User.currentUser?.backgroundImageUrl {
-            backgroundImageView.setImageWith(backgroundURL)
-        }
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        tweetFeedViewController = storyboard.instantiateViewController(withIdentifier: "TweetFeedViewController") as! TweetFeedViewController
+        tweetFeedViewController.userID = userID
+        tweetFeedViewController.tweetFilter = TweetFilter.userTimeline
+        //tweetFeedViewController.reloadTable()
+        self.addChildViewController(tweetFeedViewController)
+        tweetFeedViewController.view.frame = contentView.bounds
+        tweetFeedViewController.willMove(toParentViewController: self)
+        contentView.addSubview(tweetFeedViewController.view)
+        tweetFeedViewController.didMove(toParentViewController: self)
         
+        let profileHeaderController = storyboard.instantiateViewController(withIdentifier: "ProfileHeader") as! ProfileHeaderViewController
+        
+        profileHeaderController.userID = userID
+        tweetFeedViewController.addChildViewController(profileHeaderController)
+        profileHeaderController.view.frame = tweetFeedViewController.headerContainer.bounds
+        profileHeaderController.willMove(toParentViewController: self)
+        tweetFeedViewController.headerContainer.frame.size.height = 250
+        tweetFeedViewController.headerContainer.addSubview(profileHeaderController.view)
+        profileHeaderController.didMove(toParentViewController: self)
         
         navigationController?.navigationBar.barTintColor = UIColor(hexString: "#4099ffff")
-        
         let titleDict: [String:Any] = [NSForegroundColorAttributeName: UIColor.white]
         self.navigationController?.navigationBar.titleTextAttributes = titleDict
         self.navigationController?.navigationBar.tintColor = UIColor.white
-        
-        //tweetDataSource = TweetDataSource(tableView: tweetTable, tweetFilter: TweetFilter.all)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

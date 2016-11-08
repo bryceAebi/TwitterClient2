@@ -40,7 +40,7 @@ class TweetViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        profilePic.setImageWith(tweet?.profilePic as! URL)
+        profilePic.setImageWith((tweet?.profilePic)!)
         profilePic.layer.cornerRadius = 3
         profilePic.clipsToBounds = true
         

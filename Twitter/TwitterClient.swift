@@ -63,6 +63,19 @@ class TwitterClient: BDBOAuth1SessionManager {
         )
     }
     
+    func user(userID: String, success: @escaping (User) ->(), failure: @escaping (Error) -> ()) {
+        get("1.1/users/show.json", parameters: ["user_id": userID], progress: nil,
+            success: { (task: URLSessionDataTask, response: Any?) in
+                let userDictionary = response as! NSDictionary
+                let user = User(dictionary: userDictionary)
+                success(user)
+            },
+            failure: { (task: URLSessionDataTask?, error: Error) in
+                failure(error)
+            }
+        )
+    }
+    
     func homeTimeline(success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
         get("1.1/statuses/home_timeline.json", parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
                 let dictionaries = response as! [NSDictionary]
@@ -83,6 +96,18 @@ class TwitterClient: BDBOAuth1SessionManager {
                 failure(error)
             }
         )
+    }
+    
+    func userTimeline(userID: String, success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
+        get("1.1/statuses/user_timeline.json", parameters: ["user_id": userID], progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            let dictionaries = response as! [NSDictionary]
+            let tweets = Tweet.tweetsWithArray(dictionaries: dictionaries)
+            success(tweets)
+            }, failure: { (task: URLSessionDataTask?, error: Error) in
+                failure(error)
+            }
+        )
+
     }
     
     func handleOpenUrl(url: URL) {

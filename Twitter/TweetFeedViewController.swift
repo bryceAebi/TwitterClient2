@@ -11,81 +11,69 @@ import UIKit
 enum TweetFilter {
     case all
     case mentions
+    case userTimeline
 }
 
 class TweetFeedViewController: UIViewController, UITableViewDelegate,UITableViewDataSource {
 
     @IBOutlet weak var tweetTable: UITableView!
-    
+    @IBOutlet weak var headerContainer: UIView!
     var tweets: [Tweet]?
-    var tweetFilter: TweetFilter!
+    var tweetFilter = TweetFilter.all
     var refreshControl: UIRefreshControl!
+    var userID: String?
     
     func refreshControlAction(refreshControl: UIRefreshControl) {
-        if self.tweetFilter == TweetFilter.mentions {
-            TwitterClient.sharedInstance?.mentions(
-                success: { (tweets: [Tweet]) in
-                    self.tweets = tweets
-                    self.tweetTable.reloadData()
-                    refreshControl.endRefreshing()
-                }, failure: { (error: Error) in
-                    print(error.localizedDescription)
-                    refreshControl.endRefreshing()
-                }
-            )
-        } else {
-            TwitterClient.sharedInstance?.homeTimeline(
-                success: { (tweets: [Tweet]) in
-                    self.tweets = tweets
-                    self.tweetTable.reloadData()
-                    refreshControl.endRefreshing()
-                }, failure: { (error: Error) in
-                    print(error.localizedDescription)
-                    refreshControl.endRefreshing()
-                }
-            )
-        }
+        reloadTable(
+            success: { (tweets: [Tweet]) in
+                self.tweets = tweets
+                self.tweetTable.reloadData()
+                refreshControl.endRefreshing()
+            },
+            failure: { (error: Error) in
+                print(error.localizedDescription)
+                refreshControl.endRefreshing()
+            }
+        )
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tweetFilter = TweetFilter.all
         
         tweetTable.delegate = self
         tweetTable.dataSource = self
         
-        reloadTable()
+        tweetTable.estimatedRowHeight = 100
+        tweetTable.rowHeight = UITableViewAutomaticDimension
+        
+        reloadTable(
+            success: { (tweets: [Tweet]) in
+                self.tweets = tweets
+                self.tweetTable.reloadData()
+            }, failure: { (error: Error ) in
+                print(error.localizedDescription)
+            }
+        )
         
         refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(refreshControlAction), for: UIControlEvents.valueChanged)
         tweetTable.insertSubview(refreshControl, at: 0)
-        print(tweets)
     }
     
-    func reloadTable() {
-        print("LOADING THE TWEETS")
+    func reloadTable(success: @escaping ([Tweet]) -> (), failure: @escaping (Error) -> ()) {
         if self.tweetFilter == TweetFilter.mentions {
-            TwitterClient.sharedInstance?.mentions(
-                success: { (tweets: [Tweet]) in
-                    print("SUCCESSFUL")
-                    self.tweets = tweets
-                    self.tweetTable.reloadData()
-                }, failure: { (error: Error) in
-                    print("FAILURE")
-                    print(error.localizedDescription)
-                }
-            )
+            TwitterClient.sharedInstance?.mentions(success: success, failure: failure)
+        } else if self.tweetFilter == TweetFilter.all {
+            TwitterClient.sharedInstance?.homeTimeline(success: success, failure: failure)
         } else {
-            TwitterClient.sharedInstance?.homeTimeline(
-                success: { (tweets: [Tweet]) in
-                    print("SUCCESSFUL")
-                    print(tweets)
-                    self.tweets = tweets
-                    self.tweetTable.reloadData()
-                }, failure: { (error: Error) in
-                    print("FAILURE")
-                    print(error.localizedDescription)
-                }
+            var id = (User.currentUser?.id!)!
+            if let userID = userID {
+                id = userID
+            }
+            TwitterClient.sharedInstance?.userTimeline(
+                userID: id,
+                success: success,
+                failure: failure
             )
         }
     }
@@ -110,9 +98,18 @@ class TweetFeedViewController: UIViewController, UITableViewDelegate,UITableView
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
-        if let sender = sender as? TwitterTableViewCell {
+        
+        if let button = sender as? UIButton {
+            let view = button.superview!
+            let cell = view.superview as! UITableViewCell
+            let indexPath = tweetTable.indexPath(for: cell)
+            let vc = segue.destination as! ProfileViewController
+            vc.userID = tweets?[(indexPath?.row)!].userID
+        }
+        
+        if let cell = sender as? TwitterTableViewCell {
+            var indexPath = tweetTable.indexPath(for: cell)
             let vc = segue.destination as! TweetViewController
-            var indexPath = tweetTable.indexPath(for: sender)
             vc.tweet = tweets?[(indexPath?.row)!]
         }
     }

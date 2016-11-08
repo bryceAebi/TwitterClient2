@@ -40,18 +40,18 @@ class TwitterTableViewCell: UITableViewCell {
     func setCell(fromTweet tweet: Tweet) {
         self.tweet = tweet
         
-        print("++++++++++++")
-        print(tweet.profilePic)
-        /*
         if let profilePicURL = tweet.profilePic {
             print(profilePicURL)
             if let data = NSData(contentsOf: profilePicURL as URL) {
+                print("data successful")
                 print(UIImage(data: data as Data))
-                profilePicButton.setImage(UIImage(data: data as Data), for: .normal)
+                if let uiImage = UIImage(data: data as Data) {
+                   profilePicButton.setBackgroundImage(uiImage, for: .normal)
+                }
+                
             }
-        }*/
+        }
 
-        
         tweetLabel.text = tweet.text
         userNameLabel.text = tweet.username
         if let screenname = tweet.screenname {
@@ -72,15 +72,6 @@ class TwitterTableViewCell: UITableViewCell {
                 favoriteButton.setImage(UIImage(named: "star"), for: .normal)
             }
         }
-        
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-        /*
-        profilePicButton.layer.cornerRadius = 3
-        profilePicButton.clipsToBounds = true*/
     }
 
 }

@@ -11,13 +11,10 @@ import UIKit
 class HamburgerViewController: UIViewController {
  
     @IBOutlet weak var leftMarginConstraint: NSLayoutConstraint!
-    
     @IBOutlet weak var menuView: UIView!
     @IBOutlet weak var contentView: UIView!
     
     var originalLeftMargin: CGFloat!
-    
-
     
     var menuViewController: UIViewController! {
         didSet {
@@ -72,21 +69,5 @@ class HamburgerViewController: UIViewController {
             print("cancelled")
         }
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        print("HAMBURGER VIEW CONTROLLER LOADED")
-    }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
